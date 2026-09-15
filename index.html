@@ -1,8 +1,8 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>ChemLab: El Desafío de la Nomenclatura</title>
+  <title>ChemLab: Óxidos Ácidos (Anhídridos)</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -99,7 +99,7 @@
     }
 
     .slot {
-      width: 120px;
+      width: 140px;
       height: 100px;
       border: 2px dashed var(--accent);
       border-radius: 8px;
@@ -107,9 +107,10 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: bold;
       background-color: rgba(56, 189, 248, 0.05);
+      text-align: center;
     }
 
     .plus {
@@ -119,14 +120,14 @@
 
     .options-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: 10px;
       margin-bottom: 20px;
     }
 
     .element-card {
       background-color: #334155;
-      padding: 15px;
+      padding: 12px;
       border-radius: 6px;
       text-align: center;
       cursor: pointer;
@@ -140,7 +141,7 @@
     }
 
     .element-card .symbol {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: bold;
       color: var(--accent);
     }
@@ -172,19 +173,18 @@
 
 <div class="container">
   <header>
-    <h1>ChemLab: Nomenclatura Inorgánica</h1>
+    <h1>ChemLab: Óxidos Ácidos (Anhídridos)</h1>
     <div class="authors">Proyecto Escolar | Integrantes: Antonio, Alan, Ariel y Palomino</div>
   </header>
 
   <div id="start-screen" class="screen active">
-    <h2>¡Bienvenido al Laboratorio Virtual!</h2>
+    <h2>¡Laboratorio de Óxidos Ácidos!</h2>
     <div class="instructions">
       <h3>Instrucciones de uso:</h3>
       <ul>
-        <li><strong>Objetivo:</strong> Formar los 10 compuestos químicos inorgánicos solicitados combinando un catión y un anión.</li>
-        <li><strong>Mecánica:</strong> Selecciona un ion positivo (catión) y uno negativo (anión) del panel de reactivos.</li>
-        <li><strong>Puntuación:</strong> Cada acierto suma 100 puntos. Intenta obtener el puntaje máximo de 1000 puntos.</li>
-        <li><strong>Aprende:</strong> Al formar la fórmula correcta, repasa su nombre y estructura química.</li>
+        <li><strong>Objetivo:</strong> Formar 10 óxidos ácidos (anhídridos) combinando un No Metal con Oxígeno.</li>
+        <li><strong>Mecánica:</strong> Selecciona el no metal con su estado de oxidación correcto y combínalo con el anión óxido.</li>
+        <li><strong>Puntuación:</strong> Cada acierto suma 100 puntos. Logra el puntaje máximo de 1000 pts.</li>
       </ul>
     </div>
     <button class="btn" onclick="startGame()">Comenzar Práctica</button>
@@ -202,14 +202,14 @@
     </div>
 
     <div class="lab-bench">
-      <div class="slot" id="slot-cation">
+      <div class="slot" id="slot-nometal">
         <span class="symbol">?</span>
-        <span class="name" style="font-size:0.7rem;">Catión</span>
+        <span class="name" style="font-size:0.7rem;">No Metal</span>
       </div>
       <div class="plus">+</div>
-      <div class="slot" id="slot-anion">
+      <div class="slot" id="slot-oxigeno">
         <span class="symbol">?</span>
-        <span class="name" style="font-size:0.7rem;">Anión</span>
+        <span class="name" style="font-size:0.7rem;">Oxígeno</span>
       </div>
     </div>
 
@@ -225,7 +225,7 @@
 
   <div id="end-screen" class="screen" style="text-align: center;">
     <h2>Práctica Finalizada</h2>
-    <p>Has completado el módulo de evaluación de laboratorio.</p>
+    <p>Has completado el módulo de Óxidos Ácidos.</p>
     <div style="font-size: 2.5rem; font-weight: bold; color: var(--accent); margin: 20px 0;">
       <span id="final-score">0</span> pts
     </div>
@@ -235,43 +235,37 @@
 </div>
 
 <script>
-  const ions = {
-    cations: [
-      { symbol: "Na⁺", name: "Sodio", val: "Na+" },
-      { symbol: "Ca²⁺", name: "Calcio", val: "Ca2+" },
-      { symbol: "Fe³⁺", name: "Hierro (III)", val: "Fe3+" },
-      { symbol: "H⁺", name: "Hidrógeno", val: "H+" },
-      { symbol: "K⁺", name: "Potasio", val: "K+" },
-      { symbol: "Mg²⁺", name: "Magnesio", val: "Mg2+" },
-      { symbol: "Li⁺", name: "Litio", val: "Li+" }
-    ],
-    anions: [
-      { symbol: "Cl⁻", name: "Cloruro", val: "Cl-" },
-      { symbol: "O²⁻", name: "Óxido", val: "O2-" },
-      { symbol: "(OH)⁻", name: "Hidróxido", val: "OH-" },
-      { symbol: "(SO₄)²⁻", name: "Sulfato", val: "SO42-" },
-      { symbol: "F⁻", name: "Fluoruro", val: "F-" },
-      { symbol: "(NO₃)⁻", name: "Nitrato", val: "NO3-" }
-    ]
-  };
+  const nonMetals = [
+    { symbol: "C⁴⁺", name: "Carbono (IV)", val: "C4+" },
+    { symbol: "C²⁺", name: "Carbono (II)", val: "C2+" },
+    { symbol: "S⁶⁺", name: "Azufre (VI)", val: "S6+" },
+    { symbol: "S⁴⁺", name: "Azufre (IV)", val: "S4+" },
+    { symbol: "N⁵⁺", name: "Nitrógeno (V)", val: "N5+" },
+    { symbol: "N³⁺", name: "Nitrógeno (III)", val: "N3+" },
+    { symbol: "Cl⁷⁺", name: "Cloro (VII)", val: "Cl7+" },
+    { symbol: "Cl⁺", name: "Cloro (I)", val: "Cl1+" },
+    { symbol: "P⁵⁺", name: "Fósforo (V)", val: "P5+" }
+  ];
+
+  const oxygen = { symbol: "O²⁻", name: "Óxido", val: "O2-" };
 
   const targets = [
-    { name: "Cloruro de Sodio (Sal de mesa)", cation: "Na+", anion: "Cl-", formula: "NaCl" },
-    { name: "Óxido de Calcio (Cal viva)", cation: "Ca2+", anion: "O2-", formula: "CaO" },
-    { name: "Hidróxido de Sodio (Sosa cáustica)", cation: "Na+", anion: "OH-", formula: "NaOH" },
-    { name: "Ácido Clorhídrico", cation: "H+", anion: "Cl-", formula: "HCl" },
-    { name: "Óxido de Hierro (III)", cation: "Fe3+", anion: "O2-", formula: "Fe₂O₃" },
-    { name: "Fluoruro de Litio", cation: "Li+", anion: "F-", formula: "LiF" },
-    { name: "Hidróxido de Calcio", cation: "Ca2+", anion: "OH-", formula: "Ca(OH)₂" },
-    { name: "Sulfato de Magnesio", cation: "Mg2+", anion: "SO42-", formula: "MgSO₄" },
-    { name: "Nitrato de Potasio", cation: "K+", anion: "NO3-", formula: "KNO₃" },
-    { name: "Cloruro de Magnesio", cation: "Mg2+", anion: "Cl-", formula: "MgCl₂" }
+    { name: "Dióxido de Carbono (Anhídrido carbónico)", nometal: "C4+", formula: "CO₂" },
+    { name: "Monóxido de Carbono (Anhídrido carbonoso)", nometal: "C2+", formula: "CO" },
+    { name: "Trióxido de Azufre (Anhídrido sulfúrico)", nometal: "S6+", formula: "SO₃" },
+    { name: "Dióxido de Azufre (Anhídrido sulfuroso)", nometal: "S4+", formula: "SO₂" },
+    { name: "Pentóxido de Dinitrógeno (Anhídrido nítrico)", nometal: "N5+", formula: "N₂O₅" },
+    { name: "Trióxido de Dinitrógeno (Anhídrido nitroso)", nometal: "N3+", formula: "N₂O₃" },
+    { name: "Heptóxido de Dichloró (Anhídrido perclórico)", nometal: "Cl7+", formula: "Cl₂O₇" },
+    { name: "Monóxido de Dichloró (Anhídrido hipocloroso)", nometal: "Cl1+", formula: "Cl₂O" },
+    { name: "Pentóxido de Difósforo (Anhídrido fosfórico)", nometal: "P5+", formula: "P₂O₅" },
+    { name: "Trióxido de Azufre (Repaso)", nometal: "S6+", formula: "SO₃" }
   ];
 
   let currentRound = 0;
   let score = 0;
-  let selectedCation = null;
-  let selectedAnion = null;
+  let selectedNoMetal = null;
+  let selectedOxigeno = null;
 
   function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -303,63 +297,62 @@
     const container = document.getElementById('options-container');
     container.innerHTML = '';
 
-    ions.cations.forEach(item => {
+    nonMetals.forEach(item => {
       const card = document.createElement('div');
       card.className = 'element-card';
       card.innerHTML = `<div class="symbol">${item.symbol}</div><div class="name">${item.name}</div>`;
-      card.onclick = () => selectIon('cation', item);
+      card.onclick = () => selectIon('nometal', item);
       container.appendChild(card);
     });
 
-    ions.anions.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'element-card';
-      card.innerHTML = `<div class="symbol">${item.symbol}</div><div class="name">${item.name}</div>`;
-      card.onclick = () => selectIon('anion', item);
-      container.appendChild(card);
-    });
+    const oxCard = document.createElement('div');
+    oxCard.className = 'element-card';
+    oxCard.style.backgroundColor = "#1e3a8a";
+    oxCard.innerHTML = `<div class="symbol">${oxygen.symbol}</div><div class="name">${oxygen.name}</div>`;
+    oxCard.onclick = () => selectIon('oxigeno', oxygen);
+    container.appendChild(oxCard);
   }
 
   function selectIon(type, item) {
-    if (type === 'cation') {
-      selectedCation = item;
-      document.getElementById('slot-cation').innerHTML = `<span class="symbol">${item.symbol}</span><span class="name">${item.name}</span>`;
+    if (type === 'nometal') {
+      selectedNoMetal = item;
+      document.getElementById('slot-nometal').innerHTML = `<span class="symbol">${item.symbol}</span><span class="name">${item.name}</span>`;
     } else {
-      selectedAnion = item;
-      document.getElementById('slot-anion').innerHTML = `<span class="symbol">${item.symbol}</span><span class="name">${item.name}</span>`;
+      selectedOxigeno = item;
+      document.getElementById('slot-oxigeno').innerHTML = `<span class="symbol">${item.symbol}</span><span class="name">${item.name}</span>`;
     }
   }
 
   function resetSelection() {
-    selectedCation = null;
-    selectedAnion = null;
-    document.getElementById('slot-cation').innerHTML = `<span class="symbol">?</span><span class="name" style="font-size:0.7rem;">Catión</span>`;
-    document.getElementById('slot-anion').innerHTML = `<span class="symbol">?</span><span class="name" style="font-size:0.7rem;">Anión</span>`;
+    selectedNoMetal = null;
+    selectedOxigeno = null;
+    document.getElementById('slot-nometal').innerHTML = `<span class="symbol">?</span><span class="name" style="font-size:0.7rem;">No Metal</span>`;
+    document.getElementById('slot-oxigeno').innerHTML = `<span class="symbol">?</span><span class="name" style="font-size:0.7rem;">Oxígeno</span>`;
     document.getElementById('feedback-msg').innerText = '';
   }
 
   function checkCombination() {
     const feedback = document.getElementById('feedback-msg');
     
-    if (!selectedCation || !selectedAnion) {
+    if (!selectedNoMetal || !selectedOxigeno) {
       feedback.className = 'feedback incorrect';
-      feedback.innerText = 'Debes seleccionar un catión y un anión.';
+      feedback.innerText = 'Debes seleccionar un no metal y el oxígeno.';
       return;
     }
 
     const currentTarget = targets[currentRound];
 
-    if (selectedCation.val === currentTarget.cation && selectedAnion.val === currentTarget.anion) {
+    if (selectedNoMetal.val === currentTarget.nometal) {
       score += 100;
       feedback.className = 'feedback correct';
-      feedback.innerText = `¡Correcto! Se formó ${currentTarget.formula}`;
+      feedback.innerText = `¡Correcto! Se formó el óxido ácido ${currentTarget.formula}`;
       setTimeout(() => {
         currentRound++;
         nextRound();
       }, 1500);
     } else {
       feedback.className = 'feedback incorrect';
-      feedback.innerText = 'Combinación incorrecta. Revisa las valencias e inténtalo de nuevo.';
+      feedback.innerText = 'Valencia incorrecta para ese anhídrido. ¡Inténtalo de nuevo!';
     }
   }
 
@@ -368,15 +361,13 @@
     document.getElementById('final-score').innerText = score;
     const evalText = document.getElementById('final-evaluation');
     if (score === 1000) {
-      evalText.innerText = '¡Puntaje perfecto! Dominas por completo la nomenclatura de la química inorgánica.';
+      evalText.innerText = '¡Puntaje perfecto! Dominas la nomenclatura de anhídridos y óxidos ácidos.';
     } else if (score >= 700) {
-      evalText.innerText = '¡Buen trabajo! Tienes bases sólidas en la formulación de compuestos.';
+      evalText.innerText = '¡Buen trabajo! Tienes claros los estados de oxidación de los no metales.';
     } else {
-      evalText.innerText = 'Se sugiere repasar la tabla de aniones y cationes en tu libro de texto.';
+      evalText.innerText = 'Se sugiere repasar la nomenclatura tradicional y IUPAC de óxidos no metálicos.';
     }
   }
 </script>
 </body>
 </html>
-
-    
