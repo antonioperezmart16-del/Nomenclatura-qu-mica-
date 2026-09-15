@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>ChemLab: El Desafío de la Nomenclatura</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --text: #f8fafc;
+      --success: #22c55e;
+      --danger: #ef4444;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background-color: var(--bg-color);
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    header {
+      text-align: center;
+      border-bottom: 2px solid #334155;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--accent);
+      font-size: 2rem;
+    }
+
+    .authors {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 5px;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+
+    /* Estilos de Botones */
+    .btn {
+      background-color: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 12px 24px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 1rem;
+      margin-top: 15px;
+    }
+
+    .btn:hover {
+      background-color: var(--accent-hover);
+      color: var(--text);
+    }
+
+    /* Panel de Instrucciones */
+    .instructions {
+      background-color: #334155;
+      padding: 15px;
+      border-radius: 8px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* Área de Juego */
+    .lab-bench {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin: 30px 0;
+      padding: 20px;
+      background-color: #0f172a;
+      border-radius: 8px;
+      min-height: 120px;
+    }
+
+    .slot {
+      width: 120px;
+      height: 100px;
+      border: 2px dashed var(--accent);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      background-color: rgba(56, 189, 248, 0.05);
+    }
+
+    .plus {
+      font-size: 2rem;
+      color: var(--accent);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .element-card {
+      background-color: #334155;
+      padding: 15px;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s, background-color 0.2s;
+    }
+
+    .element-card:hover {
+      transform: translateY(-2px);
+      background-color: #475569;
+    }
+
+    .element-card .symbol {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .element-card .name {
+      font-size: 0.75rem;
+      color: #cbd5e1;
+    }
+
+    /* UI de Estado */
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .feedback {
+      text-align: center;
+      font-weight: bold;
+      min-height: 24px;
+      margin-top: 10px;
+    }
+
+    .correct { color: var(--success); }
+    .incorrect { color: var(--danger); }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>ChemLab: Nomenclatura Inorgánica</h1>
+    <div class="authors">Proyecto Escolar | Integrantes: Antonio, Sofía, Carlos y Valeria</div>
+  </header>
+
+  <!-- Pantalla 1: Menú e Instrucciones (Desarrollado por integrante 1) -->
+  <div id="start-screen" class="screen active">
+    <h2>¡Bienvenido al Laboratorio Virtual!</h2>
+    <div class="instructions">
+      <h3>Instrucciones de uso:</h3>
+      <ul>
+        <li><strong>Objetivo:</strong> Formar los compuestos químicos inorgánicos solicitados combinando un catión y un anión.</li>
+        <li><strong>Mecánica:</strong> Selecciona un ion positivo y uno negativo del panel de reactivos.</li>
+        <li><strong>Puntuación:</strong> Cada acierto suma 100 puntos. Intenta obtener la máxima puntuación en 5 rondas.</li>
+        <li><strong>Aprende:</strong> Al formar la fórmula correcta, repasa su nombre en la nomenclatura IUPAC/Sistemática.</li>
+      </ul>
+    </div>
+    <button class="btn" onclick="startGame()">Comenzar Práctica</button>
+  </div>
+
+  <!-- Pantalla 2: Interfaz del Juego (Desarrollado por integrante 2 y 3) -->
+  <div id="game-screen" class="screen">
+    <div class="stats">
+      <span>Ronda: <span id="round-num">1</span>/5</span>
+      <span>Puntos: <span id="score-num">0</span></span>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 10px;">
+      <span style="color: #94a3b8;">Forma el compuesto:</span>
+      <h3 id="target-name" style="color: var(--accent); margin: 5px 0; font-size: 1.4rem;">---</h3>
+    </div>
+
+    <div class="lab-bench">
+      <div class="slot" id="slot-cation">
+        <span class="symbol">?</span>
+        <span class="name" style="font-size:0.7rem;">Catión</span>
+      </div>
+      <div class="plus">+</div>
+      <div class="slot" id="slot-anion">
+        <span class="symbol">?</span>
+        <span class="name" style="font-size:0.7rem;">Anión</span>
+      </div>
+    </div>
+
+    <div class="options-grid" id="options-container">
+      <!-- Generado dinámicamente -->
+    </div>
+
+    <div style="text-align: center;">
+      <button class="btn" onclick="checkCombination()">Combinar Reactivos</button>
+      <button class="btn" style="background-color: #475569; color: white;" onclick="resetSelection()">Limpiar</button>
+    </div>
+
+    <div class="feedback" id="feedback-msg"></div>
+  </div>
+
+  <!-- Pantalla 3: Resultados (Desarrollado por integrante 4) -->
+  <div id="end-screen" class="screen" style="text-align: center;">
+    <h2>Práctica Finalizada</h2>
+    <p>Has completado el módulo de evaluación de laboratorio.</p>
+    <div style="font-size: 2.5rem; font-weight: bold; color: var(--accent); margin: 20px 0;">
+      <span id="final-score">0</span> pts
+    </div>
+    <p id="final-evaluation"></p>
+    <button class="btn" onclick="startGame()">Intentar de Nuevo</button>
+  </div>
+</div>
+
+<script>
+  // MÓDULO 1: Base de Datos de Nomenclatura Inorgánica
+  const ions = {
+    cations: [
+      { symbol: "Na⁺", name: "Sodio", val: "Na+" },
+      { symbol: "Ca²⁺", name: "Calcio", val: "Ca2+" },
+      { symbol: "Fe³⁺", name: "Hierro (III)", val: "Fe3+" },
+      { symbol: "H⁺", name: "Hidrógeno", val: "H+" },
+      { symbol: "K⁺", name: "Potasio", val: "K+" }
+    ],
+    anions: [
+      { symbol: "Cl⁻", name: "Cloruro", val: "Cl-" },
+      { symbol: "O²⁻", name: "Óxido", val: "O2-" },
+      { symbol: "(OH)⁻", name: "Hidróxido", val: "OH-" },
+      { symbol: "(SO₄)²⁻", name: "Sulfato", val: "SO42-" }
+    ]
+  };
+
+  const targets = [
+    { name: "Cloruro de Sodio (Sal de mesa)", cation: "Na+", anion: "Cl-", formula: "NaCl" },
+    { name: "Óxido de Calcio (Cal viva)", cation: "Ca2+", anion: "O2-", formula: "CaO" },
+    { name: "Hidróxido de Sodio (Sosa cáustica)", cation: "Na+", anion: "OH-", formula: "NaOH" },
+    { name: "Ácido Clorhídrico", cation: "H+", anion: "Cl-", formula: "HCl" },
+    { name: "Óxido de Hierro (III)", cation: "Fe3+", anion: "O2-", formula: "Fe₂O₃" }
+  ];
+
+  // MÓDULO 2: Estado del Juego
+  let currentRound = 0;
+  let score = 0;
+  let selectedCation = null;
+  let selectedAnion = null;
+
+  // MÓDULO 3: Control de Flujo de Pantallas
+  function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+  }
+
+  function startGame() {
+    currentRound = 0;
+    score = 0;
+    showScreen('game-screen');
+    nextRound();
+  }
+
+  // MÓDULO 4: Lógica de la Ronda
+  function nextRound() {
+    if (currentRound >= targets.length) {
+      endGame();
+      return;
+    }
+
+    resetSelection();
+    document.getElementById('round-num').innerText = currentRound + 1;
+    document.getElementById('score-num').innerText = score;
+    document.getElementById('target-name').innerText = targets[currentRound].name;
+
+    renderOptions();
+  }
+
+  function renderOptions() {
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+
+    // Renderizar Cationes
+    ions.cations.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'element-card';
+      card.innerHTML = `<div class="symbol">${item.symbol}</div><div class="name">${item.name}</div>`;
+      card.onclick = () => selectIon('cation', item);
+      container.appendChild(card);
+    });
+
+    // Renderizar Aniones
+    ions.anions.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'element-card';
+      card.innerHTML = `<div class="symbol">${item.symbol}</div><div class="name">${item.name}</div>`;
+      card.onclick = () => selectIon('anion', item);
+      container.appendChild(card);
+    });
+  }
+
+  function selectIon(type, item) {
+    if (type === 'cation') {
+      selectedCation = item;
+      document.getElementById('slot-cation').innerHTML = `<span class="symbol">${item.symbol}</span><span class="name">${item.name}</span>`;
+    } else {
+      selectedAnion = item;
+      document.getElementById('slot-anion').innerHTML = `<span class="symbol">${item.symbol}</span><span class="name">${item.name}</span>`;
+    }
+  }
+
+  function resetSelection() {
+    selectedCation = null;
+    selectedAnion = null;
+    document.getElementById('slot-cation').innerHTML = `<span class="symbol">?</span><span class="name" style="font-size:0.7rem;">Catión</span>`;
+    document.getElementById('slot-anion').innerHTML = `<span class="symbol">?</span><span class="name" style="font-size:0.7rem;">Anión</span>`;
+    document.getElementById('feedback-msg').innerText = '';
+  }
+
+  // MÓDULO 5: Evaluación de Combinaciones Química
+  function checkCombination() {
+    const feedback = document.getElementById('feedback-msg');
+    
+    if (!selectedCation || !selectedAnion) {
+      feedback.className = 'feedback incorrect';
+      feedback.innerText = 'Debes seleccionar un catión y un anión.';
+      return;
+    }
+
+    const currentTarget = targets[currentRound];
+
+    if (selectedCation.val === currentTarget.cation && selectedAnion.val === currentTarget.anion) {
+      score += 100;
+      feedback.className = 'feedback correct';
+      feedback.innerText = `¡Correcto! Se formó ${currentTarget.formula}`;
+      setTimeout(() => {
+        currentRound++;
+        nextRound();
+      }, 1500);
+    } else {
+      feedback.className = 'feedback incorrect';
+      feedback.innerText = 'Combinación incorrecta. Revisa las valencias e inténtalo de nuevo.';
+    }
+  }
+
+  function endGame() {
+    showScreen('end-screen');
+    document.getElementById('final-score').innerText = score;
+    const evalText = document.getElementById('final-evaluation');
+    if (score === 500) {
+      evalText.innerText = '¡Excelente trabajo! Dominas la nomenclatura básica de la química inorgánica.';
+    } else if (score >= 300) {
+      evalText.innerText = 'Buen trabajo. Repasa los enlaces de oxidos e hidróxidos para mejorar.';
+    } else {
+      evalText.innerText = 'Se sugiere repasar los temas de aniones y cationes en tu libro de texto.';
+    }
+  }
+</script>
+</body>
+</html>
