@@ -53,13 +53,8 @@
       margin-top: 5px;
     }
 
-    .screen {
-      display: none;
-    }
-
-    .active {
-      display: block;
-    }
+    .screen { display: none; }
+    .active { display: block; }
 
     .btn {
       background-color: var(--accent);
@@ -91,16 +86,16 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      margin: 30px 0;
+      margin: 25px 0;
       padding: 20px;
       background-color: #0f172a;
       border-radius: 8px;
-      min-height: 120px;
+      min-height: 110px;
     }
 
     .slot {
       width: 140px;
-      height: 100px;
+      height: 90px;
       border: 2px dashed var(--accent);
       border-radius: 8px;
       display: flex;
@@ -161,8 +156,9 @@
     .feedback {
       text-align: center;
       font-weight: bold;
-      min-height: 24px;
-      margin-top: 10px;
+      min-height: 48px;
+      margin-top: 15px;
+      font-size: 1.1rem;
     }
 
     .correct { color: var(--success); }
@@ -182,9 +178,10 @@
     <div class="instructions">
       <h3>Instrucciones de uso:</h3>
       <ul>
-        <li><strong>Objetivo:</strong> Formar 10 óxidos ácidos (anhídridos) combinando un No Metal con Oxígeno.</li>
-        <li><strong>Mecánica:</strong> Selecciona el no metal con su estado de oxidación correcto y combínalo con el anión óxido.</li>
-        <li><strong>Puntuación:</strong> Cada acierto suma 100 puntos. Logra el puntaje máximo de 1000 pts.</li>
+        <li><strong>Objetivo:</strong> Formar 15 óxidos ácidos (anhídridos) en orden aleatorio combinando un No Metal con Oxígeno.</li>
+        <li><strong>Mecánica:</strong> Selecciona el no metal correcto para el compuesto solicitado y combínalo con el anión óxido.</li>
+        <li><strong>Dinámica de respuesta:</strong> Si te equivocas, el sistema te mostrará la respuesta correcta y pasará a la siguiente pregunta.</li>
+        <li><strong>Condición de victoria:</strong> Necesitas acumular un **mínimo de 1000 puntos** (10 aciertos de 15) para ganar el juego.</li>
       </ul>
     </div>
     <button class="btn" onclick="startGame()">Comenzar Práctica</button>
@@ -192,7 +189,7 @@
 
   <div id="game-screen" class="screen">
     <div class="stats">
-      <span>Ronda: <span id="round-num">1</span>/10</span>
+      <span>Ronda: <span id="round-num">1</span>/15</span>
       <span>Puntos: <span id="score-num">0</span></span>
     </div>
 
@@ -216,7 +213,7 @@
     <div class="options-grid" id="options-container"></div>
 
     <div style="text-align: center;">
-      <button class="btn" onclick="checkCombination()">Combinar Reactivos</button>
+      <button class="btn" id="btn-combine" onclick="checkCombination()">Combinar Reactivos</button>
       <button class="btn" style="background-color: #475569; color: white;" onclick="resetSelection()">Limpiar</button>
     </div>
 
@@ -225,10 +222,11 @@
 
   <div id="end-screen" class="screen" style="text-align: center;">
     <h2>Práctica Finalizada</h2>
-    <p>Has completado el módulo de Óxidos Ácidos.</p>
+    <p>Has completado las 15 rondas de evaluación.</p>
     <div style="font-size: 2.5rem; font-weight: bold; color: var(--accent); margin: 20px 0;">
       <span id="final-score">0</span> pts
     </div>
+    <h3 id="win-status" style="margin-bottom: 10px;"></h3>
     <p id="final-evaluation"></p>
     <button class="btn" onclick="startGame()">Intentar de Nuevo</button>
   </div>
@@ -243,29 +241,43 @@
     { symbol: "N⁵⁺", name: "Nitrógeno (V)", val: "N5+" },
     { symbol: "N³⁺", name: "Nitrógeno (III)", val: "N3+" },
     { symbol: "Cl⁷⁺", name: "Cloro (VII)", val: "Cl7+" },
+    { symbol: "Cl⁵⁺", name: "Cloro (V)", val: "Cl5+" },
+    { symbol: "Cl³⁺", name: "Cloro (III)", val: "Cl3+" },
     { symbol: "Cl⁺", name: "Cloro (I)", val: "Cl1+" },
-    { symbol: "P⁵⁺", name: "Fósforo (V)", val: "P5+" }
+    { symbol: "P⁵⁺", name: "Fósforo (V)", val: "P5+" },
+    { symbol: "P³⁺", name: "Fósforo (III)", val: "P3+" }
   ];
 
   const oxygen = { symbol: "O²⁻", name: "Óxido", val: "O2-" };
 
-  const targets = [
-    { name: "Dióxido de Carbono (Anhídrido carbónico)", nometal: "C4+", formula: "CO₂" },
-    { name: "Monóxido de Carbono (Anhídrido carbonoso)", nometal: "C2+", formula: "CO" },
-    { name: "Trióxido de Azufre (Anhídrido sulfúrico)", nometal: "S6+", formula: "SO₃" },
-    { name: "Dióxido de Azufre (Anhídrido sulfuroso)", nometal: "S4+", formula: "SO₂" },
-    { name: "Pentóxido de Dinitrógeno (Anhídrido nítrico)", nometal: "N5+", formula: "N₂O₅" },
-    { name: "Trióxido de Dinitrógeno (Anhídrido nitroso)", nometal: "N3+", formula: "N₂O₃" },
-    { name: "Heptóxido de Dichloró (Anhídrido perclórico)", nometal: "Cl7+", formula: "Cl₂O₇" },
-    { name: "Monóxido de Dichloró (Anhídrido hipocloroso)", nometal: "Cl1+", formula: "Cl₂O" },
-    { name: "Pentóxido de Difósforo (Anhídrido fosfórico)", nometal: "P5+", formula: "P₂O₅" },
-    { name: "Trióxido de Azufre (Repaso)", nometal: "S6+", formula: "SO₃" }
+  const baseTargets = [
+    { name: "Trióxido de Dinitrógeno (Anhídrido nitroso)", nometal: "N3+", nometalSymbol: "N³⁺", formula: "N₂O₃" },
+    { name: "Trióxido de Azufre (Anhídrido sulfúrico)", nometal: "S6+", nometalSymbol: "S⁶⁺", formula: "SO₃" },
+    { name: "Monóxido de Dicloro (Anhídrido hipocloroso)", nometal: "Cl1+", nometalSymbol: "Cl⁺", formula: "Cl₂O" },
+    { name: "Dióxido de Carbono (Anhídrido carbónico)", nometal: "C4+", nometalSymbol: "C⁴⁺", formula: "CO₂" },
+    { name: "Pentóxido de Difósforo (Anhídrido fosfórico)", nometal: "P5+", nometalSymbol: "P⁵⁺", formula: "P₂O₅" },
+    { name: "Pentóxido de Dinitrógeno (Anhídrido nítrico)", nometal: "N5+", nometalSymbol: "N⁵⁺", formula: "N₂O₅" },
+    { name: "Dióxido de Azufre (Anhídrido sulfuroso)", nometal: "S4+", nometalSymbol: "S⁴⁺", formula: "SO₂" },
+    { name: "Heptóxido de Dicloro (Anhídrido perclórico)", nometal: "Cl7+", nometalSymbol: "Cl⁷⁺", formula: "Cl₂O₇" },
+    { name: "Monóxido de Carbono (Anhídrido carbonoso)", nometal: "C2+", nometalSymbol: "C²⁺", formula: "CO" },
+    { name: "Trióxido de Difósforo (Anhídrido fosforoso)", nometal: "P3+", nometalSymbol: "P³⁺", formula: "P₂O₃" },
+    { name: "Pentóxido de Dicloro (Anhídrido clórico)", nometal: "Cl5+", nometalSymbol: "Cl⁵⁺", formula: "Cl₂O₅" },
+    { name: "Trióxido de Dicloro (Anhídrido cloroso)", nometal: "Cl3+", nometalSymbol: "Cl³⁺", formula: "Cl₂O₃" },
+    { name: "Dióxido de Carbono (Recuperación)", nometal: "C4+", nometalSymbol: "C⁴⁺", formula: "CO₂" },
+    { name: "Trióxido de Azufre (Recuperación)", nometal: "S6+", nometalSymbol: "S⁶⁺", formula: "SO₃" },
+    { name: "Pentóxido de Dinitrógeno (Recuperación)", nometal: "N5+", nometalSymbol: "N⁵⁺", formula: "N₂O₅" }
   ];
 
+  let gameTargets = [];
   let currentRound = 0;
   let score = 0;
   let selectedNoMetal = null;
   let selectedOxigeno = null;
+  let isProcessing = false;
+
+  function shuffle(array) {
+    return array.sort(() => Math.random() - 0.5);
+  }
 
   function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -275,20 +287,24 @@
   function startGame() {
     currentRound = 0;
     score = 0;
+    isProcessing = false;
+    gameTargets = shuffle([...baseTargets]);
     showScreen('game-screen');
     nextRound();
   }
 
   function nextRound() {
-    if (currentRound >= targets.length) {
+    if (currentRound >= 15) {
       endGame();
       return;
     }
 
+    isProcessing = false;
+    document.getElementById('btn-combine').disabled = false;
     resetSelection();
     document.getElementById('round-num').innerText = currentRound + 1;
     document.getElementById('score-num').innerText = score;
-    document.getElementById('target-name').innerText = targets[currentRound].name;
+    document.getElementById('target-name').innerText = gameTargets[currentRound].name;
 
     renderOptions();
   }
@@ -297,7 +313,9 @@
     const container = document.getElementById('options-container');
     container.innerHTML = '';
 
-    nonMetals.forEach(item => {
+    const shuffledMetals = shuffle([...nonMetals]);
+
+    shuffledMetals.forEach(item => {
       const card = document.createElement('div');
       card.className = 'element-card';
       card.innerHTML = `<div class="symbol">${item.symbol}</div><div class="name">${item.name}</div>`;
@@ -314,6 +332,7 @@
   }
 
   function selectIon(type, item) {
+    if (isProcessing) return;
     if (type === 'nometal') {
       selectedNoMetal = item;
       document.getElementById('slot-nometal').innerHTML = `<span class="symbol">${item.symbol}</span><span class="name">${item.name}</span>`;
@@ -324,6 +343,7 @@
   }
 
   function resetSelection() {
+    if (isProcessing) return;
     selectedNoMetal = null;
     selectedOxigeno = null;
     document.getElementById('slot-nometal').innerHTML = `<span class="symbol">?</span><span class="name" style="font-size:0.7rem;">No Metal</span>`;
@@ -332,6 +352,8 @@
   }
 
   function checkCombination() {
+    if (isProcessing) return;
+
     const feedback = document.getElementById('feedback-msg');
     
     if (!selectedNoMetal || !selectedOxigeno) {
@@ -340,32 +362,42 @@
       return;
     }
 
-    const currentTarget = targets[currentRound];
+    isProcessing = true;
+    document.getElementById('btn-combine').disabled = true;
+    const currentTarget = gameTargets[currentRound];
 
     if (selectedNoMetal.val === currentTarget.nometal) {
       score += 100;
       feedback.className = 'feedback correct';
-      feedback.innerText = `¡Correcto! Se formó el óxido ácido ${currentTarget.formula}`;
+      feedback.innerText = `¡Correcto! Se formó ${currentTarget.formula}`;
       setTimeout(() => {
         currentRound++;
         nextRound();
       }, 1500);
     } else {
       feedback.className = 'feedback incorrect';
-      feedback.innerText = 'Valencia incorrecta para ese anhídrido. ¡Inténtalo de nuevo!';
+      feedback.innerText = `Incorrecto. La respuesta correcta era ${currentTarget.nometalSymbol} + O²⁻ para formar ${currentTarget.formula}`;
+      setTimeout(() => {
+        currentRound++;
+        nextRound();
+      }, 3000);
     }
   }
 
   function endGame() {
     showScreen('end-screen');
     document.getElementById('final-score').innerText = score;
+    const winStatus = document.getElementById('win-status');
     const evalText = document.getElementById('final-evaluation');
-    if (score === 1000) {
-      evalText.innerText = '¡Puntaje perfecto! Dominas la nomenclatura de anhídridos y óxidos ácidos.';
-    } else if (score >= 700) {
-      evalText.innerText = '¡Buen trabajo! Tienes claros los estados de oxidación de los no metales.';
+
+    if (score >= 1000) {
+      winStatus.innerText = '¡¡HAS GANADO EL JUEGO!! 🏆';
+      winStatus.style.color = 'var(--success)';
+      evalText.innerText = `¡Felicidades! Superaste el mínimo de 1000 puntos requeridos obtuvieron un excelente desempeño en nomenclatura de anhídridos.`;
     } else {
-      evalText.innerText = 'Se sugiere repasar la nomenclatura tradicional y IUPAC de óxidos no metálicos.';
+      winStatus.innerText = 'JUEGO NO SUPERADO ❌';
+      winStatus.style.color = 'var(--danger)';
+      evalText.innerText = `Obtuviste ${score} puntos. Se requiere un mínimo de 1000 puntos para ganar. ¡Inténtalo de nuevo!`;
     }
   }
 </script>
