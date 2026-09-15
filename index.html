@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -61,7 +61,6 @@
       display: block;
     }
 
-    /* Estilos de Botones */
     .btn {
       background-color: var(--accent);
       color: #0f172a;
@@ -80,7 +79,6 @@
       color: var(--text);
     }
 
-    /* Panel de Instrucciones */
     .instructions {
       background-color: #334155;
       padding: 15px;
@@ -89,7 +87,6 @@
       margin-bottom: 20px;
     }
 
-    /* Área de Juego */
     .lab-bench {
       display: flex;
       justify-content: space-around;
@@ -153,7 +150,6 @@
       color: #cbd5e1;
     }
 
-    /* UI de Estado */
     .stats {
       display: flex;
       justify-content: space-between;
@@ -177,28 +173,26 @@
 <div class="container">
   <header>
     <h1>ChemLab: Nomenclatura Inorgánica</h1>
-    <div class="authors">Proyecto Escolar | Integrantes: Antonio, Sofía, Carlos y Valeria</div>
+    <div class="authors">Proyecto Escolar | Integrantes: Antonio, Alan, Ariel y Palomino</div>
   </header>
 
-  <!-- Pantalla 1: Menú e Instrucciones (Desarrollado por integrante 1) -->
   <div id="start-screen" class="screen active">
     <h2>¡Bienvenido al Laboratorio Virtual!</h2>
     <div class="instructions">
       <h3>Instrucciones de uso:</h3>
       <ul>
-        <li><strong>Objetivo:</strong> Formar los compuestos químicos inorgánicos solicitados combinando un catión y un anión.</li>
-        <li><strong>Mecánica:</strong> Selecciona un ion positivo y uno negativo del panel de reactivos.</li>
-        <li><strong>Puntuación:</strong> Cada acierto suma 100 puntos. Intenta obtener la máxima puntuación en 5 rondas.</li>
-        <li><strong>Aprende:</strong> Al formar la fórmula correcta, repasa su nombre en la nomenclatura IUPAC/Sistemática.</li>
+        <li><strong>Objetivo:</strong> Formar los 10 compuestos químicos inorgánicos solicitados combinando un catión y un anión.</li>
+        <li><strong>Mecánica:</strong> Selecciona un ion positivo (catión) y uno negativo (anión) del panel de reactivos.</li>
+        <li><strong>Puntuación:</strong> Cada acierto suma 100 puntos. Intenta obtener el puntaje máximo de 1000 puntos.</li>
+        <li><strong>Aprende:</strong> Al formar la fórmula correcta, repasa su nombre y estructura química.</li>
       </ul>
     </div>
     <button class="btn" onclick="startGame()">Comenzar Práctica</button>
   </div>
 
-  <!-- Pantalla 2: Interfaz del Juego (Desarrollado por integrante 2 y 3) -->
   <div id="game-screen" class="screen">
     <div class="stats">
-      <span>Ronda: <span id="round-num">1</span>/5</span>
+      <span>Ronda: <span id="round-num">1</span>/10</span>
       <span>Puntos: <span id="score-num">0</span></span>
     </div>
 
@@ -219,9 +213,7 @@
       </div>
     </div>
 
-    <div class="options-grid" id="options-container">
-      <!-- Generado dinámicamente -->
-    </div>
+    <div class="options-grid" id="options-container"></div>
 
     <div style="text-align: center;">
       <button class="btn" onclick="checkCombination()">Combinar Reactivos</button>
@@ -231,7 +223,6 @@
     <div class="feedback" id="feedback-msg"></div>
   </div>
 
-  <!-- Pantalla 3: Resultados (Desarrollado por integrante 4) -->
   <div id="end-screen" class="screen" style="text-align: center;">
     <h2>Práctica Finalizada</h2>
     <p>Has completado el módulo de evaluación de laboratorio.</p>
@@ -244,20 +235,23 @@
 </div>
 
 <script>
-  // MÓDULO 1: Base de Datos de Nomenclatura Inorgánica
   const ions = {
     cations: [
       { symbol: "Na⁺", name: "Sodio", val: "Na+" },
       { symbol: "Ca²⁺", name: "Calcio", val: "Ca2+" },
       { symbol: "Fe³⁺", name: "Hierro (III)", val: "Fe3+" },
       { symbol: "H⁺", name: "Hidrógeno", val: "H+" },
-      { symbol: "K⁺", name: "Potasio", val: "K+" }
+      { symbol: "K⁺", name: "Potasio", val: "K+" },
+      { symbol: "Mg²⁺", name: "Magnesio", val: "Mg2+" },
+      { symbol: "Li⁺", name: "Litio", val: "Li+" }
     ],
     anions: [
       { symbol: "Cl⁻", name: "Cloruro", val: "Cl-" },
       { symbol: "O²⁻", name: "Óxido", val: "O2-" },
       { symbol: "(OH)⁻", name: "Hidróxido", val: "OH-" },
-      { symbol: "(SO₄)²⁻", name: "Sulfato", val: "SO42-" }
+      { symbol: "(SO₄)²⁻", name: "Sulfato", val: "SO42-" },
+      { symbol: "F⁻", name: "Fluoruro", val: "F-" },
+      { symbol: "(NO₃)⁻", name: "Nitrato", val: "NO3-" }
     ]
   };
 
@@ -266,16 +260,19 @@
     { name: "Óxido de Calcio (Cal viva)", cation: "Ca2+", anion: "O2-", formula: "CaO" },
     { name: "Hidróxido de Sodio (Sosa cáustica)", cation: "Na+", anion: "OH-", formula: "NaOH" },
     { name: "Ácido Clorhídrico", cation: "H+", anion: "Cl-", formula: "HCl" },
-    { name: "Óxido de Hierro (III)", cation: "Fe3+", anion: "O2-", formula: "Fe₂O₃" }
+    { name: "Óxido de Hierro (III)", cation: "Fe3+", anion: "O2-", formula: "Fe₂O₃" },
+    { name: "Fluoruro de Litio", cation: "Li+", anion: "F-", formula: "LiF" },
+    { name: "Hidróxido de Calcio", cation: "Ca2+", anion: "OH-", formula: "Ca(OH)₂" },
+    { name: "Sulfato de Magnesio", cation: "Mg2+", anion: "SO42-", formula: "MgSO₄" },
+    { name: "Nitrato de Potasio", cation: "K+", anion: "NO3-", formula: "KNO₃" },
+    { name: "Cloruro de Magnesio", cation: "Mg2+", anion: "Cl-", formula: "MgCl₂" }
   ];
 
-  // MÓDULO 2: Estado del Juego
   let currentRound = 0;
   let score = 0;
   let selectedCation = null;
   let selectedAnion = null;
 
-  // MÓDULO 3: Control de Flujo de Pantallas
   function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
@@ -288,7 +285,6 @@
     nextRound();
   }
 
-  // MÓDULO 4: Lógica de la Ronda
   function nextRound() {
     if (currentRound >= targets.length) {
       endGame();
@@ -307,7 +303,6 @@
     const container = document.getElementById('options-container');
     container.innerHTML = '';
 
-    // Renderizar Cationes
     ions.cations.forEach(item => {
       const card = document.createElement('div');
       card.className = 'element-card';
@@ -316,7 +311,6 @@
       container.appendChild(card);
     });
 
-    // Renderizar Aniones
     ions.anions.forEach(item => {
       const card = document.createElement('div');
       card.className = 'element-card';
@@ -344,7 +338,6 @@
     document.getElementById('feedback-msg').innerText = '';
   }
 
-  // MÓDULO 5: Evaluación de Combinaciones Química
   function checkCombination() {
     const feedback = document.getElementById('feedback-msg');
     
@@ -374,14 +367,16 @@
     showScreen('end-screen');
     document.getElementById('final-score').innerText = score;
     const evalText = document.getElementById('final-evaluation');
-    if (score === 500) {
-      evalText.innerText = '¡Excelente trabajo! Dominas la nomenclatura básica de la química inorgánica.';
-    } else if (score >= 300) {
-      evalText.innerText = 'Buen trabajo. Repasa los enlaces de oxidos e hidróxidos para mejorar.';
+    if (score === 1000) {
+      evalText.innerText = '¡Puntaje perfecto! Dominas por completo la nomenclatura de la química inorgánica.';
+    } else if (score >= 700) {
+      evalText.innerText = '¡Buen trabajo! Tienes bases sólidas en la formulación de compuestos.';
     } else {
-      evalText.innerText = 'Se sugiere repasar los temas de aniones y cationes en tu libro de texto.';
+      evalText.innerText = 'Se sugiere repasar la tabla de aniones y cationes en tu libro de texto.';
     }
   }
 </script>
 </body>
 </html>
+
+    
